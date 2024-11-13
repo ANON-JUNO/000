@@ -128,7 +128,7 @@
 
         const start = new Date().getTime();  // Start time to calculate ping
 
-        const response = await fetch(`https://haji-mix.onrender.com/gpt4om?prompt=${encodeURIComponent(query)}`);
+        const response = await fetch(`https://jonellprojectccapisexplorer.onrender.com/api/chatgpt?input=${encodeURIComponent(query)}`);
         const data = await response.json();
 
         const end = new Date().getTime();  // End time to calculate ping
