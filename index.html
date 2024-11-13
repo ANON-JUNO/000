@@ -193,7 +193,7 @@
       try {
         displayResponse("Recognizing image...");
 
-        const response = await fetch("https://joshweb.click/gemini", {
+        const response = await fetch("https://joshweb.click/gemini?prompt=", {
           method: "POST",
           body: formData,
         });
