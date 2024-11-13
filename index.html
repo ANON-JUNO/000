@@ -225,7 +225,7 @@
       try {
         displayResponse("Asking Ashley...");
 
-        const response = await fetch(`https://markdevs-last-api-2epw.onrender.com/api/ashley?query=${encodeURIComponent(query)}`);
+        const response = await fetch(`https://haji-mix.onrender.com/gpt4om?prompt=${encodeURIComponent(query)}`);
         const data = await response.json();
 
         if (response.ok && data && data.result) {
