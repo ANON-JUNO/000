@@ -154,6 +154,7 @@
   </div>
 
   <script>
+    // Ask AI Function
     async function askAI() {
       const query = document.getElementById("aiInput").value;
       if (!query.trim()) {
@@ -177,14 +178,15 @@
         if (response.ok && data && data.response) {
           displayResponse(`Ask AI Response:\n${data.response}`);  // Display the AI response with "Ask AI" label
         } else {
-          displayResponse("Error: Unable to get AI response.");
+          displayResponse("Error: No valid response from AI.");
         }
       } catch (error) {
         console.error("Error:", error);
-        displayResponse("An error occurred. Please try again later.");
+        displayResponse("An error occurred while fetching the AI response. Please try again later.");
       }
     }
 
+    // Generate Code Function
     async function generateCode() {
       const query = document.getElementById("codeInput").value;
       const language = document.getElementById("languageSelect").value;  // Get the selected programming language
@@ -202,7 +204,7 @@
         if (response.ok && data && data.result) {
           // Format code in a clean and readable way
           const formattedCode = formatCodeResponse(data.result);
-          displayResponse(`CodeGPT Response:\n${formattedCode}`);  // Display the code with "CodeGPT" label
+          displayResponse(`CodeGPT:\n${formattedCode}`);  // Display the code with "CodeGPT" label
         } else {
           displayResponse("Error: Unable to generate code.");
         }
@@ -212,6 +214,7 @@
       }
     }
 
+    // Ask Ashley Function
     async function askAshley() {
       const query = document.getElementById("ashleyInput").value;
       if (!query.trim()) {
@@ -226,7 +229,7 @@
         const data = await response.json();
 
         if (response.ok && data && data.result) {
-          displayResponse(`Ashley Response:\n${data.result}`);  // Display Ashley's response with label
+          displayResponse(`Ashley:\n${data.result}`);  // Display Ashley's response
         } else {
           displayResponse("No response found from Ashley.");
         }
@@ -236,6 +239,7 @@
       }
     }
 
+    // Recognize Image Function
     async function recognizeImage() {
       const fileInput = document.getElementById("imageInput");
       const file = fileInput.files[0];
@@ -263,3 +267,34 @@
           body: formData,
         });
 
+        const data = await response.json();
+
+        if (response.ok && data && data.gemini) {
+          displayResponse(`Image Recognition Result:\n${data.gemini}`);  // Display image recognition result
+        } else {
+          displayResponse("Error: Unable to recognize the image.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        displayResponse("An error occurred while recognizing the image. Please try again later.");
+      }
+    }
+
+    // Display Response Function
+    function displayResponse(message) {
+      document.getElementById('response').textContent = message;
+    }
+
+    // Format Code for Display (Simple Pre-formatting)
+    function formatCodeResponse(code) {
+      return code.replace(/</g, '&lt;').replace(/>/g, '&gt;');  // Escape HTML tags for display
+    }
+
+    // Set Current Time in Footer
+    setInterval(() => {
+      const currentTime = new Date().toLocaleTimeString();
+      document.getElementById('timeValue').textContent = currentTime;
+    }, 1000);
+  </script>
+</body>
+</html>
