@@ -175,7 +175,7 @@
         document.getElementById('pingValue').textContent = `${ping} ms`;  // Update the ping in the UI
 
         if (response.ok && data && data.response) {
-          displayResponse(`Ask AI:\n${data.response}`);  // Display the AI response with "Ask AI" label
+          displayResponse(`Ask AI Response:\n${data.response}`);  // Display the AI response with "Ask AI" label
         } else {
           displayResponse("Error: Unable to get AI response.");
         }
@@ -202,7 +202,7 @@
         if (response.ok && data && data.result) {
           // Format code in a clean and readable way
           const formattedCode = formatCodeResponse(data.result);
-          displayResponse(`CodeGPT:\n${formattedCode}`);  // Display the code with "CodeGPT" label
+          displayResponse(`CodeGPT Response:\n${formattedCode}`);  // Display the code with "CodeGPT" label
         } else {
           displayResponse("Error: Unable to generate code.");
         }
@@ -226,7 +226,7 @@
         const data = await response.json();
 
         if (response.ok && data && data.result) {
-          displayResponse(`Ashley:\n${data.result}`);  // Display Ashley's response
+          displayResponse(`Ashley Response:\n${data.result}`);  // Display Ashley's response with label
         } else {
           displayResponse("No response found from Ashley.");
         }
@@ -263,38 +263,3 @@
           body: formData,
         });
 
-        const data = await response.json();
-
-        if (response.ok && data && data.gemini) {
-          displayResponse(data.gemini);  // Display image recognition result with no extra explanation
-        } else {
-          displayResponse("Error: Unable to recognize the image.");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        displayResponse("An error occurred while recognizing the image. Please try again later.");
-      }
-    }
-
-    function formatCodeResponse(code) {
-      return code
-        .split("\n")
-        .map(line => `  ${line}`)
-        .join("\n");
-    }
-
-    function displayResponse(message) {
-      const responseDiv = document.getElementById("response");
-      responseDiv.innerHTML = message;
-    }
-
-    // Display current time and update every second
-    function updateTime() {
-      const time = new Date().toLocaleTimeString();
-      document.getElementById("timeValue").textContent = time;
-    }
-
-    setInterval(updateTime, 1000);  // Update time every second
-  </script>
-</body>
-</html>
