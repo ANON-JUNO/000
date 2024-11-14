@@ -72,7 +72,7 @@
       border: 1px solid #ddd;
       border-radius: 4px;
       min-height: 50px;
-      white-space: pre-wrap; /* Ensures line breaks in code */
+      white-space: pre-wrap;
     }
 
     .footer {
@@ -91,14 +91,12 @@
   <div class="container">
     <h1>CHATBOT</h1>
 
-    <!-- Ask AI Section -->
     <div class="section">
       <h3>Ask AI</h3>
       <input type="text" id="aiInput" placeholder="Ask a question...">
       <button onclick="askAI()">Ask AI</button>
     </div>
 
-    <!-- Generate Code Section with Language Selection -->
     <div class="section">
       <h3>Generate Code</h3>
       <input type="text" id="codeInput" placeholder="Ask for code...">
@@ -111,14 +109,12 @@
       <button onclick="generateCode()">Generate Code</button>
     </div>
 
-    <!-- Ask Ashley Section -->
     <div class="section">
       <h3>Ask Ashley</h3>
       <input type="text" id="ashleyInput" placeholder="Ask a question...">
       <button onclick="askAshley()">Ask Ashley</button>
     </div>
 
-    <!-- Image Recognition Section -->
     <div class="section">
       <h3>Recognize Image</h3>
       <input type="file" id="imageInput" accept="image/*">
@@ -126,10 +122,8 @@
       <button onclick="recognizeImage()">Recognize Image</button>
     </div>
 
-    <!-- Response Display Area -->
     <div id="response"></div>
 
-    <!-- Footer Section for Credits, Ping, and Time -->
     <div class="footer">
       <div id="credits">© 2024 Juno Delos Santos. All rights reserved.</div>
       <div id="time"> <span id="timeValue">Loading...</span></div>
@@ -137,7 +131,6 @@
   </div>
 
   <script>
-    // Ask AI Function
     async function askAI() {
       const query = document.getElementById("aiInput").value;
       if (!query.trim()) {
@@ -148,31 +141,22 @@
       try {
         displayResponse("Asking AI...");
 
-        const start = new Date().getTime();  // Start time to calculate ping
-
-        const response = await fetch(`https://haji-mix.onrender.com/gpt4om?prompt=${encodeURIComponent(query)}`);
+        const response = await fetch(`/gpt4om?prompt=${encodeURIComponent(query)}`);
         const data = await response.json();
 
-        const end = new Date().getTime();  // End time to calculate ping
-        const ping = end - start;  // Calculate the ping
-
-        document.getElementById('pingValue').textContent = `${ping} ms`;  // Update the ping in the UI
-
         if (response.ok && data && data.response) {
-          displayResponse(`Ask AI Response:\nAI's response to: "${query}"\n\n${data.response}`);  // Display the AI response with "Ask AI" label
+          displayResponse(`Ask AI Response:\nAI's response to: "${query}"\n\n${data.response}`);
         } else {
           displayResponse("Error: No valid response from AI.");
         }
       } catch (error) {
-        console.error("Error:", error);
-        displayResponse("An error occurred while fetching the AI response. Please try again later.");
+        displayResponse("An error occurred while fetching the AI response.");
       }
     }
 
-    // Generate Code Function
     async function generateCode() {
       const query = document.getElementById("codeInput").value;
-      const language = document.getElementById("languageSelect").value;  // Get the selected programming language
+      const language = document.getElementById("languageSelect").value;
       if (!query.trim()) {
         displayResponse("Please enter a code-related query.");
         return;
@@ -181,23 +165,19 @@
       try {
         displayResponse("Generating code...");
 
-        const response = await fetch(`https://joshweb.click/api/codegpt?type=code&lang=${language}&q=${encodeURIComponent(query)}`);
+        const response = await fetch(`/codegpt?type=code&lang=${language}&q=${encodeURIComponent(query)}`);
         const data = await response.json();
 
         if (response.ok && data && data.result) {
-          // Format code in a clean and readable way
-          const formattedCode = formatCodeResponse(data.result);
-          displayResponse(`CodeGPT:\nCode in ${language.toUpperCase()}:\n\n${formattedCode}`);  // Display the code with "CodeGPT" label
+          displayResponse(`CodeGPT:\nCode in ${language.toUpperCase()}:\n\n${data.result}`);
         } else {
           displayResponse("Error: Unable to generate code.");
         }
       } catch (error) {
-        console.error("Error:", error);
-        displayResponse("An error occurred while generating the code. Please try again later.");
+        displayResponse("An error occurred while generating the code.");
       }
     }
 
-    // Ask Ashley Function
     async function askAshley() {
       const query = document.getElementById("ashleyInput").value;
       if (!query.trim()) {
@@ -207,45 +187,36 @@
 
       try {
         displayResponse("Asking Ashley...");
-
-        const response = await fetch(`https://markdevs-last-api-2epw.onrender.com/api/ashley?query=${encodeURIComponent(query)}`);
+        const response = await fetch(`/ashley?query=${encodeURIComponent(query)}`);
         const data = await response.json();
 
         if (response.ok && data && data.result) {
-          displayResponse(`Ashley:\n${data.result}`);  // Display Ashley's response
+          displayResponse(`Ashley:\n${data.result}`);
         } else {
           displayResponse("No response found from Ashley.");
         }
       } catch (error) {
-        console.error("Error:", error);
-        displayResponse("An error occurred while processing the request. Please try again later.");
+        displayResponse("An error occurred while processing the request.");
       }
     }
 
-    // Recognize Image Function
     async function recognizeImage() {
       const fileInput = document.getElementById("imageInput");
       const file = fileInput.files[0];
-      const question = document.getElementById("imageQuestionInput").value.trim();  // Get the question from the user input
+      const question = document.getElementById("imageQuestionInput").value.trim();
 
-      if (!file) {
-        displayResponse("Please upload an image.");
-        return;
-      }
-
-      if (!question) {
-        displayResponse("Please enter a question about the image.");
+      if (!file || !question) {
+        displayResponse("Please upload an image and enter a question.");
         return;
       }
 
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("question", encodeURIComponent(question));  // Ensure question is encoded
+      formData.append("question", question);
 
       try {
         displayResponse("Recognizing image...");
-
-        const response = await fetch(`https://joshweb.click/gemini?prompt=${encodeURIComponent(question)}`, {
+        const response = await fetch(`/gemini`, {
           method: "POST",
           body: formData,
         });
@@ -253,24 +224,17 @@
         const data = await response.json();
 
         if (response.ok && data && data.gemini) {
-          displayResponse(`Image Recognition Result:\n${data.gemini}`);  // Display image recognition result
+          displayResponse(`Image Recognition Result:\n${data.gemini}`);
         } else {
           displayResponse("Error: Unable to recognize the image.");
         }
       } catch (error) {
-        console.error("Error:", error);
-        displayResponse("An error occurred while recognizing the image. Please try again later.");
+        displayResponse("An error occurred while recognizing the image.");
       }
     }
 
-    // Display Response Function
     function displayResponse(message) {
       document.getElementById("response").textContent = message;
-    }
-
-    // Format Code Response
-    function formatCodeResponse(code) {
-      return code.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/(\r\n|\n|\r)/g, '\n');
     }
   </script>
 </body>
