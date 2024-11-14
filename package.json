@@ -1,0 +1,19 @@
+{
+  "name": "chatbot-project",
+  "version": "1.0.0",
+  "description": "A simple chatbot project with backend and frontend.",
+  "main": "backend.js",
+  "scripts": {
+    "start": "node backend.js"
+  },
+  "keywords": [
+    "chatbot",
+    "render",
+    "express"
+  ],
+  "author": "Juno Delos Santos",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
