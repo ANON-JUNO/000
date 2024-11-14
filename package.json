@@ -1,19 +1,20 @@
 {
-  "name": "chatbot-project",
+  "name": "chatbot-webapp",
   "version": "1.0.0",
-  "description": "A simple chatbot project with backend and frontend.",
+  "description": "A chatbot web application using Node.js and Express",
   "main": "backend.js",
   "scripts": {
     "start": "node backend.js"
   },
-  "keywords": [
-    "chatbot",
-    "render",
-    "express"
-  ],
-  "author": "Juno Delos Santos",
-  "license": "MIT",
   "dependencies": {
-    "express": "^4.18.1"
-  }
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "multer": "^1.4.5",
+    "node-fetch": "^2.6.7"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "author": "Juno Delos Santos",
+  "license": "ISC"
 }
