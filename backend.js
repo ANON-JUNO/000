@@ -1,117 +1,83 @@
 const express = require('express');
+const app = express();
 const cors = require('cors');
 const multer = require('multer');
+const path = require('path');
 const fetch = require('node-fetch');
 
-const app = express();
-const port = process.env.PORT || 3000;
-
-// Middleware setup
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Setup Multer for image upload
-const upload = multer({ dest: 'uploads/' });
+const port = process.env.PORT || 3000;
 
-// Ask AI route
-app.get('/askAI', async (req, res) => {
+// Static file serving
+app.use(express.static(path.join(__dirname, 'public')));
+
+// API for handling GPT4 and code generation
+app.get('/gpt4om', async (req, res) => {
   const prompt = req.query.prompt;
 
   if (!prompt) {
-    return res.json({ error: 'Please provide a prompt.' });
+    return res.status(400).json({ error: 'Prompt is required' });
   }
 
   try {
     const response = await fetch(`https://haji-mix.onrender.com/gpt4om?prompt=${encodeURIComponent(prompt)}`);
     const data = await response.json();
-
-    if (data && data.response) {
-      return res.json({
-        message: `Ask AI Response:\nAI's response to: "${prompt}"\n\n${data.response}`,
-      });
-    } else {
-      return res.json({ error: 'No response from AI.' });
-    }
+    res.json(data);
   } catch (error) {
-    return res.json({ error: 'Error fetching response from AI.' });
+    console.error('Error fetching from AI service', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-// Generate Code route
-app.get('/generateCode', async (req, res) => {
-  const query = req.query.query;
-  const language = req.query.language;
+// Code generation endpoint
+app.get('/codegpt', async (req, res) => {
+  const { type, lang, q } = req.query;
 
-  if (!query || !language) {
-    return res.json({ error: 'Please provide both query and language.' });
-  }
-
-  const validLanguages = ['html', 'css', 'javascript', 'python'];
-
-  if (!validLanguages.includes(language.toLowerCase())) {
-    return res.json({ error: 'Invalid language. Supported languages: HTML, CSS, JS, Python.' });
+  if (!q) {
+    return res.status(400).json({ error: 'Query is required' });
   }
 
   try {
-    const response = await fetch(`https://joshweb.click/api/codegpt?type=code&lang=${language}&q=${encodeURIComponent(query)}`);
+    const response = await fetch(`https://joshweb.click/api/codegpt?type=${type}&lang=${lang}&q=${encodeURIComponent(q)}`);
     const data = await response.json();
-
-    if (data && data.result) {
-      return res.json({
-        message: `Generated Code:\nCode in ${language.toUpperCase()}:\n\n${formatCode(data.result)}`,
-      });
-    } else {
-      return res.json({ error: 'Error generating code.' });
-    }
+    res.json(data);
   } catch (error) {
-    return res.json({ error: 'Error generating code.' });
+    console.error('Error generating code', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-// Recognize Image route
-app.post('/recognizeImage', upload.single('file'), async (req, res) => {
-  const file = req.file;
-  const question = req.body.question;
+// Image recognition endpoint
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-  if (!file) {
-    return res.json({ error: 'Please upload an image.' });
-  }
+app.post('/gemini', upload.single('file'), async (req, res) => {
+  const { file, body } = req;
+  const question = body.question;
 
-  if (!question) {
-    return res.json({ error: 'Please provide a question about the image.' });
+  if (!file || !question) {
+    return res.status(400).json({ error: 'Image and question are required' });
   }
 
   try {
-    const formData = new FormData();
-    formData.append('file', file.buffer, file.originalname);
-    formData.append('question', question);
-
-    const response = await fetch('https://joshweb.click/gemini', {
+    const response = await fetch('https://example.com/api/image-recognition', {
       method: 'POST',
-      body: formData,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, image: file.buffer }),
     });
 
     const data = await response.json();
-
-    if (data && data.gemini) {
-      return res.json({
-        message: `Image Recognition Result:\n\n${data.gemini}`,
-      });
-    } else {
-      return res.json({ error: 'Error recognizing image.' });
-    }
+    res.json(data);
   } catch (error) {
-    return res.json({ error: 'Error recognizing image.' });
+    console.error('Error recognizing image', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-// Format code for display
-function formatCode(code) {
-  return code.replace(/</g, '&lt;').replace(/>/g, '&gt;'); // Escape HTML tags for display
-}
-
-// Start the server
+// Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
