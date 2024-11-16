@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CHATBOT</title>
+  <title>CHATBOT BY JUNO</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f9;
+      background-color: #ffffff; /* Set body background to white */
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -18,7 +18,7 @@
     .container {
       width: 100%;
       max-width: 600px;
-      background-color: white;
+      background-color: #ffffff; /* Ensure container background is white */
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       padding: 20px;
@@ -31,6 +31,13 @@
 
     .section {
       margin: 20px 0;
+      background-color: #ffffff; /* Set section background to white */
+      padding: 15px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;  /* Center input and button horizontally */
+      justify-content: center;
     }
 
     .section h3 {
@@ -39,17 +46,13 @@
     }
 
     input[type="text"], input[type="file"], select {
-      width: 100%;
+      width: 100%;  /* Ensure the input fields take up full width */
+      max-width: 400px;  /* Optional: Limit the width */
       padding: 10px;
       margin: 10px 0;
       border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 1em;
-    }
-
-    select {
-      background-color: #fff;
-      cursor: pointer;
     }
 
     button {
@@ -73,6 +76,10 @@
       border-radius: 4px;
       min-height: 50px;
       white-space: pre-wrap;
+      max-width: 400px; /* Optional: Set a max-width for the response box */
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .footer {
@@ -84,12 +91,11 @@
     .footer div {
       margin-bottom: 5px;
     }
-
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>CHATBOT</h1>
+    <h1>CHATBOT BY JUNO</h1>
 
     <div class="section">
       <h3>Ask AI</h3>
@@ -98,7 +104,7 @@
     </div>
 
     <div class="section">
-      <h3>Generate Code</h3>
+      <h3>CodeGPT</h3>
       <input type="text" id="codeInput" placeholder="Ask for code...">
       <select id="languageSelect">
         <option value="html">HTML</option>
@@ -106,48 +112,53 @@
         <option value="javascript">JavaScript</option>
         <option value="python">Python</option>
       </select>
-      <button onclick="generateCode()">Generate Code</button>
+      <button onclick="generateCode()">Generate Code (Not working because of the API; I'll fix it another day.)</button>
     </div>
 
     <div class="section">
       <h3>Ask Ashley</h3>
       <input type="text" id="ashleyInput" placeholder="Ask a question...">
-      <button onclick="askAshley()">Ask Ashley</button>
+      <button onclick="askAshley()">Ask Ashley (This text is inappropriate.)</button>
     </div>
 
     <div class="section">
       <h3>Recognize Image</h3>
       <input type="file" id="imageInput" accept="image/*">
       <input type="text" id="imageQuestionInput" placeholder="Ask a question about the image...">
-      <button onclick="recognizeImage()">Recognize Image</button>
+      <button onclick="recognizeImage()">Recognize Image (Not working, I'll fix it in other days.)</button>
     </div>
 
     <div id="response"></div>
 
     <div class="footer">
       <div id="credits">© 2024 Juno Delos Santos. All rights reserved.</div>
-      <div id="time"> <span id="timeValue">Loading...</span></div>
+      <div id="credits">API BY Mark Hitsuraan</div>
     </div>
   </div>
 
   <script>
+    // Function to remove emojis and unwanted characters from responses
+    function sanitizeText(text) {
+      const regex = /[\p{Emoji}\p{ExtPict}]/gu;  // Regex to match emojis
+      return text.replace(regex, '');  // Replace all emojis with an empty string
+    }
+
     async function askAI() {
-      const query = document.getElementById("aiInput").value;
-      if (!query.trim()) {
+      const query = document.getElementById("aiInput").value.trim();
+      if (!query) {
         displayResponse("Please enter a question.");
         return;
       }
 
       try {
         displayResponse("Asking AI...");
-
-        const response = await fetch(`/gpt4om?prompt=${encodeURIComponent(query)}`);
+        const response = await fetch(`https://markdevs-last-api-2epw.onrender.com/api/adobo/gpt?query=${encodeURIComponent(query)}`);
         const data = await response.json();
 
-        if (response.ok && data && data.response) {
-          displayResponse(`Ask AI Response:\nAI's response to: "${query}"\n\n${data.response}`);
+        if (response.ok && data && data.result) {
+          displayResponse(`Ask AI Response:\n\n${sanitizeText(data.result)}`);
         } else {
-          displayResponse("Error: No valid response from AI.");
+          displayResponse("Error: Unable to retrieve a response from the AI.");
         }
       } catch (error) {
         displayResponse("An error occurred while fetching the AI response.");
@@ -155,21 +166,20 @@
     }
 
     async function generateCode() {
-      const query = document.getElementById("codeInput").value;
+      const query = document.getElementById("codeInput").value.trim();
       const language = document.getElementById("languageSelect").value;
-      if (!query.trim()) {
+      if (!query) {
         displayResponse("Please enter a code-related query.");
         return;
       }
 
       try {
         displayResponse("Generating code...");
-
-        const response = await fetch(`/codegpt?type=code&lang=${language}&q=${encodeURIComponent(query)}`);
+        const response = await fetch(`https://joshweb.click/api/codegpt?type=code&lang=${language}&query=${encodeURIComponent(query)}`);
         const data = await response.json();
 
         if (response.ok && data && data.result) {
-          displayResponse(`CodeGPT:\nCode in ${language.toUpperCase()}:\n\n${data.result}`);
+          displayResponse(`Code in ${language.toUpperCase()}:\n\n${sanitizeText(data.result)}`);
         } else {
           displayResponse("Error: Unable to generate code.");
         }
@@ -179,24 +189,24 @@
     }
 
     async function askAshley() {
-      const query = document.getElementById("ashleyInput").value;
-      if (!query.trim()) {
+      const query = document.getElementById("ashleyInput").value.trim();
+      if (!query) {
         displayResponse("Please enter a question.");
         return;
       }
 
       try {
         displayResponse("Asking Ashley...");
-        const response = await fetch(`/ashley?query=${encodeURIComponent(query)}`);
+        const response = await fetch(`https://markdevs-last-api-2epw.onrender.com/api/ashley?query=${encodeURIComponent(query)}`);
         const data = await response.json();
 
         if (response.ok && data && data.result) {
-          displayResponse(`Ashley:\n${data.result}`);
+          displayResponse(`Ashley:\n\n${sanitizeText(data.result)}`);
         } else {
-          displayResponse("No response found from Ashley.");
+          displayResponse("Error: No valid response from Ashley.");
         }
       } catch (error) {
-        displayResponse("An error occurred while processing the request.");
+        displayResponse("An error occurred while fetching Ashley's response.");
       }
     }
 
@@ -212,19 +222,18 @@
 
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("question", question);
+      formData.append("prompt", question);
 
       try {
         displayResponse("Recognizing image...");
-        const response = await fetch(`/gemini`, {
+        const response = await fetch("https://joshweb.click/new/gemini?prompt=" + encodeURIComponent(question), {
           method: "POST",
           body: formData,
         });
-
         const data = await response.json();
 
-        if (response.ok && data && data.gemini) {
-          displayResponse(`Image Recognition Result:\n${data.gemini}`);
+        if (response.ok && data && data.result) {
+          displayResponse(`Image Recognition Result:\n\n${sanitizeText(data.result)}`);
         } else {
           displayResponse("Error: Unable to recognize the image.");
         }
