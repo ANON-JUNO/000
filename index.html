@@ -5,137 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chatbot by Juno</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: 
-        radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      background-size: 50px 50px, cover;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      position: relative;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 700px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      padding: 30px;
-      text-align: center;
-      animation: fadeIn 1s ease-out;
-    }
-
-    h1 {
-      margin-top: 0;
-      color: #333;
-    }
-
-    .section {
-      background: #f9f9f9;
-      margin: 20px 0;
-      padding: 20px;
-      border-radius: 10px;
-      transition: transform 0.3s;
-      animation: fadeIn 1s ease-out;
-    }
-
-    .section:hover {
-      transform: translateY(-5px);
-    }
-
-    .section h3 {
-      margin-bottom: 15px;
-      font-size: 1.3em;
-      color: #555;
-    }
-
-    textarea {
-      width: 100%;
-      max-width: 500px;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1em;
-      resize: vertical;
-      transition: border-color 0.3s;
-    }
-
-    textarea:focus {
-      border-color: #4caf50;
-      outline: none;
-    }
-
-    .button-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 10px;
-    }
-
-    button {
-      background: linear-gradient(45deg, #4caf50, #45a049);
-      color: #fff;
-      border: none;
-      padding: 12px 25px;
-      cursor: pointer;
-      border-radius: 6px;
-      font-size: 1em;
-      transition: background 0.3s, transform 0.2s;
-    }
-
-    button:hover {
-      background: linear-gradient(45deg, #45a049, #4caf50);
-      transform: scale(1.02);
-    }
-
-    #response {
-      margin-top: 20px;
-      padding: 15px;
-      background: #eef;
-      border: 1px solid #ccd;
-      border-radius: 6px;
-      min-height: 60px;
-      white-space: pre-wrap;
-      max-width: 500px;
-      width: 100%;
-      margin-left: auto;
-      margin-right: auto;
-      animation: fadeIn 1s ease-out;
-      text-align: left;
-    }
-
-    .footer {
-      margin-top: 25px;
-      font-size: 0.9em;
-      color: #777;
-    }
-
-    .footer div {
-      margin-bottom: 5px;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
@@ -151,7 +21,7 @@
 
     <div class="section" id="humanizerSection">
       <h3>Humanizer</h3>
-      <textarea id="humanizerInput" placeholder="Ask a question..."></textarea>
+      <textarea id="humanizerInput" placeholder="Enter text to humanize..."></textarea>
       <div class="button-container">
         <button onclick="askHumanizer()">Humanize</button>
       </div>
@@ -164,55 +34,6 @@
       <div id="credits">API by Mark Hitsuraan.</div>
     </div>
   </div>
-
-  <script>
-    async function askAI() {
-      const query = document.getElementById("aiInput").value.trim();
-      if (!query) {
-        displayResponse("Please enter a question.");
-        return;
-      }
-      try {
-        displayResponse("Asking AI...");
-        const response = await fetch(
-          `https://markdevs-last-api-2epw.onrender.com/api/adobo/gpt?query=${encodeURIComponent(query)}`
-        );
-        const data = await response.json();
-        if (response.ok && data && data.result) {
-          displayResponse(`Ask AI Response:\n\n${data.result}`);
-        } else {
-          displayResponse("Error: Unable to retrieve a response from the AI.");
-        }
-      } catch (error) {
-        displayResponse("An error occurred while fetching the AI response.");
-      }
-    }
-
-    async function askHumanizer() {
-      const query = document.getElementById("humanizerInput").value.trim();
-      if (!query) {
-        displayResponse("Please enter a text.");
-        return;
-      }
-      try {
-        displayResponse("Humanizing...");
-        const response = await fetch(
-          `https://jonell01-ccprojectsapihshs.hf.space/api/aihuman?text=${encodeURIComponent(query)}`
-        );
-        const data = await response.json();
-        if (response.ok && data && data.result) {
-          displayResponse(`Humanizer Response:\n\n${data.result}`);
-        } else {
-          displayResponse("Error: Unable to retrieve a response from Humanizer.");
-        }
-      } catch (error) {
-        displayResponse("An error occurred while fetching the Humanizer response.");
-      }
-    }
-
-    function displayResponse(responseText) {
-      document.getElementById("response").textContent = responseText;
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
