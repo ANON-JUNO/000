@@ -161,6 +161,7 @@
 
     <div class="footer">
       <div id="credits">© 2024 Juno Delos Santos. All rights reserved.</div>
+      <div id="credits">API by Mark Hitsuraan.</div>
     </div>
   </div>
 
@@ -174,7 +175,7 @@
       try {
         displayResponse("Asking AI...");
         const response = await fetch(
-          `https://jonell01-ccprojectsapihshs.hf.space/api/copilot?ask=${encodeURIComponent(query)}`
+          `https://markdevs-last-api-2epw.onrender.com/api/adobo/gpt?query=${encodeURIComponent(query)}`
         );
         const data = await response.json();
         if (response.ok && data && data.result) {
